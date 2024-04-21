@@ -10,11 +10,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Print message
+        run: echo "OK 1"
+        
       - name: Install sshpass
         run: sudo apt-get update && sudo apt-get install -y sshpass
+
+      - name: Print message
+        run: echo "OK 2"
 
       - name: SSH into server and execute commands
         run: |
           sshpass -p ${{ secrets.SSH_PASSWORD }} ssh root@45.89.65.109 'cd MediLink/server && git pull && docker compose build && docker compose up -d'
         shell: bash
+        
+      - name: Print message
+        run: echo "OK 3"
 
