@@ -6,7 +6,7 @@ services:
     depends_on:
       - postgres
     command:
-      - "npm run start:prod && npm run migration:run"
+      - "npm run migration:run && npm run start:prod"
 
   postgres:
     image: postgres:16.2-alpine3.19
