@@ -3,6 +3,10 @@ services:
     build: .
     ports:
       - "80:3000"
+    depends_on:
+      - postgres
+    command:
+      - "npm run start:prod && npm run migration:run"
 
   postgres:
     image: postgres:16.2-alpine3.19

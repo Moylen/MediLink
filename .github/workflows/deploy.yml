@@ -21,6 +21,5 @@ jobs:
           git pull
           docker compose build
           docker compose up -d
-          npm run migration:run
 
 
