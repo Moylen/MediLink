@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PatientsService } from '../patients/patients.service';
-import { CreatePatientDto } from '../patients/dto/CreatePatientDto';
+import { CreatePatientDto } from '../patients/dto/create-patient.dto';
 import * as bcrypt from 'bcryptjs';
-import { LoginDto } from './dto/LoginDto';
+import { LoginDto } from './dto/login.dto';
 import { DoctorsService } from '../doctors/doctors.service';
 
 @Injectable()
@@ -43,15 +43,15 @@ export class AuthService {
   }
 
   private async validatePatient(loginDto: LoginDto) {
-    try {
-      const patient = await this.patientService.getPatientByEmail(loginDto.email);
-      const passwordEquals = await bcrypt.compare(loginDto.password, patient.password);
-      if (patient && passwordEquals) {
-        return patient;
-      }
-    } catch (e) {
+    const patient = await this.patientService.getPatientByEmail(loginDto.email);
+    if (!patient) {
       throw new UnauthorizedException('Wrong email or password');
     }
+    const passwordEquals = await bcrypt.compare(loginDto.password, patient.password);
+    if (!passwordEquals) {
+      throw new UnauthorizedException('Wrong email or password');
+    }
+    return patient;
   }
 
   private async validateDoctor(loginDto: LoginDto) {

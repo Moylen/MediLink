@@ -1,10 +1,9 @@
-import { Body, Controller, HttpStatus, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreatePatientDto } from '../patients/dto/CreatePatientDto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { LoginDto } from './dto/LoginDto';
+import { CreatePatientDto } from '../patients/dto/create-patient.dto';
+import { ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { LoginDto } from './dto/login.dto';
 
-@UsePipes(new ValidationPipe())
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
@@ -12,6 +11,7 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'Авторизация (доктор и пациент)' })
+  @ApiResponse({status: HttpStatus.CREATED, description: "JWT", type: String})
   @Post()
   login(@Body() loginDto: LoginDto) {
     if (loginDto.role === 'doctor') {
@@ -21,6 +21,7 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'Регистрация пациента' })
+  @ApiResponse({status: HttpStatus.CREATED, description: "JWT", type: String})
   @Post('patient/registration')
   registerPatient(@Body() createPatientDto: CreatePatientDto) {
     return this.authService.registerPatient(createPatientDto);
