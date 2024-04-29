@@ -35,6 +35,10 @@ export class AuthService {
     return this.generateToken(patient.id, patient.email, patient.role);
   }
 
+  validateToken(token: string) {
+    return this.jwtService.verify(token);
+  }
+
   private async generateToken(id: number, email: string, role: string) {
     const payload = { id: id, email: email, role: role };
     return {
