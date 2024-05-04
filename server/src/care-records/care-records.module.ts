@@ -1,0 +1,18 @@
+import { Module } from '@nestjs/common';
+import { CareRecordsService } from './care-records.service';
+import { CareRecordsController } from './care-records.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { CareRecord } from './entities/care-record.entity';
+import { AuthModule } from '../auth/auth.module';
+import { CaresModule } from './cares/cares.module';
+
+@Module({
+  controllers: [CareRecordsController],
+  providers: [CareRecordsService],
+  imports: [
+    TypeOrmModule.forFeature([CareRecord]),
+    AuthModule,
+    CaresModule,
+  ]
+})
+export class CareRecordsModule {}
