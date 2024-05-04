@@ -1,5 +1,6 @@
 import { IsDateString, IsEmail, IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { UserRoleEnum } from '../../common/enums/user-role.enum';
 
 
 export class CreatePatientDto {
@@ -31,5 +32,5 @@ export class CreatePatientDto {
   @IsNotEmpty()
   birthday: Date;
 
-  role: string = 'patient';
+  role: string = UserRoleEnum.Patient;
 }

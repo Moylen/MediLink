@@ -22,7 +22,7 @@ export class AuthController {
 
   @ApiOperation({ summary: 'Регистрация пациента' })
   @ApiResponse({status: HttpStatus.CREATED, description: "JWT", type: String})
-  @Post('patient/registration')
+  @Post('patients/registration')
   registerPatient(@Body() createPatientDto: CreatePatientDto) {
     return this.authService.registerPatient(createPatientDto);
   }

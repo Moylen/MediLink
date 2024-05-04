@@ -4,8 +4,6 @@ import { PatientsController } from './patients.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Patient } from './entities/patient.entity';
 import { AuthModule } from '../auth/auth.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { ExcludePasswordInterceptor } from '../interceptors/exclude-password.interceptor';
 import { JwtService } from '@nestjs/jwt';
 
 @Module({

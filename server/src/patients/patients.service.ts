@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Patient } from './entities/patient.entity';
 import { CreatePatientDto } from './dto/create-patient.dto';
-import { PatientDto } from './dto/patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
 
 @Injectable()
@@ -22,7 +21,7 @@ export class PatientsService {
     return await this.patientRepository.findOneBy({ email: email });
   }
 
-  async getPatientById(id: number): Promise<PatientDto> {
+  async getPatientById(id: number): Promise<Patient> {
     const patient = await this.patientRepository.findOneBy({ id: id });
     if (!patient) {
       throw new NotFoundException('Patient not found');
@@ -30,11 +29,11 @@ export class PatientsService {
     return patient;
   }
 
-  async getAllPatients(): Promise<PatientDto[]> {
+  async getAllPatients(): Promise<Patient[]> {
     return await this.patientRepository.find();
   }
 
-  async updatePatientById(id: number, updatePatientDto: UpdatePatientDto): Promise<PatientDto> {
+  async updatePatientById(id: number, updatePatientDto: UpdatePatientDto): Promise<Patient> {
     let patient = await this.patientRepository.findOneBy({ id: id });
     if (!patient) {
       throw new NotFoundException('Patient not found');
