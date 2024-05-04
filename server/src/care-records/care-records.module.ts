@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CareRecord } from './entities/care-record.entity';
 import { AuthModule } from '../auth/auth.module';
 import { CaresModule } from './cares/cares.module';
+import { CareResultsModule } from './care-result/care-results.module';
 
 @Module({
   controllers: [CareRecordsController],
@@ -13,6 +14,7 @@ import { CaresModule } from './cares/cares.module';
     TypeOrmModule.forFeature([CareRecord]),
     AuthModule,
     CaresModule,
+    CareResultsModule
   ]
 })
 export class CareRecordsModule {}
