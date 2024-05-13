@@ -20,7 +20,7 @@ export class CaresController {
   @ApiOperation({ summary: 'Создать мед. услугу | roles: doctor' })
   @ApiOkResponse({ type: Care })
   @Post()
-  createMedicalService(@Body() dto: CreateCareDto) {
+  createCare(@Body() dto: CreateCareDto) {
     return this.careService.createCare(dto);
   }
 
@@ -29,6 +29,13 @@ export class CaresController {
   @Get(':id')
   getById(@Param('id') id: number) {
     return this.careService.getCareById(id);
+  }
+
+  @ApiOperation({ summary: 'Получить все мед. услуги | roles: patient, doctor' })
+  @ApiOkResponse({ type: [Care] })
+  @Get()
+  getAllCares() {
+    return this.careService.getAllCares();
   }
 
   @ApiOperation({ summary: 'Изменить мед. услугу по ID | roles: doctor' })

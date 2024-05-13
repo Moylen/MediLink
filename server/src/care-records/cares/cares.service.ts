@@ -18,19 +18,27 @@ export class CaresService {
   }
 
   async getCareById(id: number) {
-     const service = await this.careRepository.findOneBy({ id: id });
-     if (!service) {
-       throw new NotFoundException('Medical service not found');
+     const care = await this.careRepository.findOneBy({ id: id });
+     if (!care) {
+       throw new NotFoundException('Medical care not found');
      }
-     return service;
+     return care;
+  }
+
+  async getAllCares() {
+    const cares = await this.careRepository.find();
+    if (cares.length === 0) {
+      throw new NotFoundException('Medical cares not found');
+    }
+    return cares;
   }
 
   async updateCareById(id: number, dto: UpdateCareDto) {
-    const service = await this.careRepository.findOneBy({ id: id });
-    if (!service) {
-      throw new NotFoundException('Medical service not found');
+    const care = await this.careRepository.findOneBy({ id: id });
+    if (!care) {
+      throw new NotFoundException('Medical care not found');
     }
-    Object.assign(service, dto);
-    return await this.careRepository.save(service);
+    Object.assign(care, dto);
+    return await this.careRepository.save(care);
   }
 }
