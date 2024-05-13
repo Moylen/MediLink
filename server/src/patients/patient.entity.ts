@@ -1,6 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { CareRecord } from '../../care-records/entities/care-record.entity';
+import { CareRecord } from '../care-records/care-record.entity';
 
 @Entity()
 export class Patient {
@@ -12,7 +12,7 @@ export class Patient {
   @Column({ nullable: false, unique: true })
   email: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, select: false })
   password: string;
 
   @ApiProperty({ example: 'patient', description: 'Роль' })
@@ -39,6 +39,6 @@ export class Patient {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @ManyToOne(() => CareRecord, careRecord => careRecord.patient)
+  @OneToMany(() => CareRecord, careRecord => careRecord.patient)
   careRecords: CareRecord[];
 }

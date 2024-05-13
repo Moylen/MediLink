@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { CareRecord } from '../../entities/care-record.entity';
+import { CareRecord } from '../care-record.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
@@ -12,7 +12,7 @@ export class CareResult {
   @Column({ nullable: false })
   comment: string;
 
-  @ApiProperty({ example: 'path/to/file', description: 'Путь до файла' })
+  @ApiProperty({ example: 'filename.pdf', description: 'Путь до файла' })
   @Column({ nullable: false })
   file: string;
 
@@ -24,10 +24,10 @@ export class CareResult {
   @UpdateDateColumn()
   updatedAt: Date;
 
+  @ApiProperty({ type: () => CareRecord })
   @OneToOne(
     () => CareRecord,
-    careRecord => careRecord.careResult,
-    { cascade: true })
+    { cascade: true, eager: true })
   @JoinColumn()
   careRecord: CareRecord;
 }

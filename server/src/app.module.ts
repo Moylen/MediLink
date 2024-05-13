@@ -4,9 +4,9 @@ import { PatientsModule } from './patients/patients.module';
 import { dataSourceOptions } from '../db/data-source';
 import { AuthModule } from './auth/auth.module';
 import { DoctorsModule } from './doctors/doctors.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { ExcludePasswordInterceptor } from './common/interceptors/exclude-password.interceptor';
 import { CareRecordsModule } from './care-records/care-records.module';
+import { FilesModule } from './files/files.module';
+import { DepartmentsModule } from './doctors/departments/departments.module';
 
 
 @Module({
@@ -16,12 +16,8 @@ import { CareRecordsModule } from './care-records/care-records.module';
     AuthModule,
     DoctorsModule,
     CareRecordsModule,
-  ],
-  providers: [
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: ExcludePasswordInterceptor,
-    },
+    FilesModule,
+    DepartmentsModule
   ],
 })
 export class AppModule {

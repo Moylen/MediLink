@@ -1,25 +1,67 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CareResult } from './entities/care-result.entity';
+import { CareResult } from './care-result.entity';
 import { CreateCareResultDto } from './dto/create-care-result.dto';
+import { FilesService } from '../../files/files.service';
+import { CareRecord } from '../care-record.entity';
 
 
 @Injectable()
 export class CareResultsService {
   constructor(
     @InjectRepository(CareResult)
-    private careRecordRepository: Repository<CareResult>,
+    private careResultRepository: Repository<CareResult>,
+    @InjectRepository(CareRecord)
+    private careRecordRepository: Repository<CareRecord>,
+    private filesService: FilesService,
   ) {
   }
 
-  async createRecord(dto: CreateCareResultDto, image: any) {
-    // const fileName = (Сделать модуль для работы с файлами)
-    // const record = await this.careRecordRepository.save({...dto, file: fileName})
-    // return record;
+  async createCareResult(dto: CreateCareResultDto, file: any) {
+    const isExists = await this.careResultRepository.findOne({
+      where: { careRecord: { id: Number(dto.careRecordId) } },
+    });
+
+    if (isExists) {
+      throw new BadRequestException('Care result for this record already exists');
+    }
+
+    const fileName = await this.filesService.createFile(file);
+    const record = await this.careRecordRepository.findOne({
+      where: { id: Number(dto.careRecordId) },
+    });
+    return await this.careResultRepository.save({
+      comment: dto.comment,
+      careRecord: record,
+      file: fileName,
+    });
   }
 
   async getCareResultById(id: number) {
-    return await this.careRecordRepository.findOneBy({ id: id });
+    const result = await this.careResultRepository.findOne({
+      where: { id },
+    });
+
+    if (!result) {
+      throw new NotFoundException('Care result not found');
+    }
+
+    return result;
+  }
+
+  async getCareResultsByPatientId(id: number) {
+    const results = await this.careResultRepository.find({
+      where: {
+        careRecord:
+          { patient: { id } },
+      },
+    });
+
+    if (results.length === 0) {
+      throw new NotFoundException('Care results not found');
+    }
+
+    return results;
   }
 }

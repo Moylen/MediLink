@@ -66,6 +66,7 @@ export class AuthService {
         return doctor;
       }
     } catch (e) {
+      console.log(e);
       throw new UnauthorizedException('Wrong email or password');
     }
   }

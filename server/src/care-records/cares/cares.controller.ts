@@ -7,7 +7,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RoleGuard } from '../../auth/guards/role.guard';
 import { UserRoleEnum } from '../../common/enums/user-role.enum';
 import { UpdateCareDto } from './dto/update-care.dto';
-import { Care } from './entities/care.entity';
+import { Care } from './care.entity';
 
 @ApiTags('Cares')
 @ApiBearerAuth()

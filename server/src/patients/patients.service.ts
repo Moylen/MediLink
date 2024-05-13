@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Patient } from './entities/patient.entity';
+import { Patient } from './patient.entity';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
 
@@ -18,7 +18,10 @@ export class PatientsService {
   }
 
   async getPatientByEmail(email: string): Promise<Patient> {
-    return await this.patientRepository.findOneBy({ email: email });
+    return await this.patientRepository.findOne({
+      where: { email: email },
+      select: ["id", "email", "password", "role"]
+    });
   }
 
   async getPatientById(id: number): Promise<Patient> {
