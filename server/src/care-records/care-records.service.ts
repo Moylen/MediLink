@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CareRecord } from './entities/care-record.entity';
+import { CareRecord } from './care-record.entity';
 import { CreateCareRecordDto } from './dto/create-care-record.dto';
 import { UpdateCareRecordDto } from './dto/update-care-record.dto';
 
@@ -14,20 +14,40 @@ export class CareRecordsService {
   }
 
   async createCareRecord(dto: CreateCareRecordDto) {
-    return await this.careRecordRepository.save(dto);
+    const newRecord = await this.careRecordRepository.save({
+      status: dto.status,
+      dateOfRecord: dto.dateOfRecord,
+      patient: { id: dto.patientId },
+      care: { id: dto.careId },
+    });
+    return await this.careRecordRepository.findOneBy({ id: newRecord.id });
   }
 
-  async getCareRecorddById(id: number) {
-    const record = await this.careRecordRepository.findOneBy({id: id});
-    if (!record){
+  async getCareRecordById(id: number) {
+    const record = await this.careRecordRepository.findOne({
+      where: { id },
+    });
+    if (!record) {
       throw new NotFoundException('Service record not found');
     }
     return record;
   }
 
+  async getCareRecordsByPatientId(id: number) {
+    const records = await this.careRecordRepository.find({
+      where: { patient: { id } },
+    });
+
+    if (records.length === 0) {
+      throw new NotFoundException('Care records not found');
+    }
+
+    return records;
+  }
+
   async updateCareRecordById(id: number, dto: UpdateCareRecordDto) {
-    const record = await this.careRecordRepository.findOneBy({id: id});
-    if (!record){
+    const record = await this.careRecordRepository.findOneBy({ id });
+    if (!record) {
       throw new NotFoundException('Service record not found');
     }
     Object.assign(record, dto);

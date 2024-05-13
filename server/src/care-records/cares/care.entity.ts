@@ -1,6 +1,6 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { CareRecord } from '../../entities/care-record.entity';
+import { CareRecord } from '../care-record.entity';
 
 
 @Entity()
@@ -33,6 +33,6 @@ export class Care {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => CareRecord, careRecord => careRecord.care)
+  @OneToMany(() => CareRecord, careRecord => careRecord.care)
   careRecords: CareRecord[];
 }

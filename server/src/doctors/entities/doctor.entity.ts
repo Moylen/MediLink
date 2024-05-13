@@ -1,5 +1,5 @@
 import { Speciality } from './speciality.entity';
-import { Department } from './department.entity';
+import { Department } from '../departments/department.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 @Entity()
@@ -10,7 +10,7 @@ export class Doctor {
   @Column({ nullable: false, unique: true })
   email: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, select: false })
   password: string;
 
   @Column({ nullable: false, default: 'doctor' })

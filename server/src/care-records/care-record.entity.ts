@@ -1,9 +1,9 @@
 import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { RecordStatusEnum } from '../../common/enums/record-status.enum';
-import { Patient } from '../../patients/entities/patient.entity';
+import { RecordStatusEnum } from '../common/enums/record-status.enum';
+import { Patient } from '../patients/patient.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { Care } from '../cares/entities/care.entity';
-import { CareResult } from '../care-result/entities/care-result.entity';
+import { Care } from './cares/care.entity';
+import { CareResult } from './care-result/care-result.entity';
 
 @Entity()
 export class CareRecord {
@@ -19,19 +19,19 @@ export class CareRecord {
   @Column({ type: 'enum', enum: RecordStatusEnum, default: RecordStatusEnum.Planned, nullable: false })
   status: RecordStatusEnum;
 
-  @ApiProperty({ type: () => Patient, example: 1, description: 'ID пациента' })
+  @ApiProperty({ type: () => Patient })
   @ManyToOne(
     () => Patient,
     patient => patient.careRecords,
-    { nullable: true },
+    { nullable: false, cascade: true, eager: true },
   )
   patient: Patient;
 
-  @ApiProperty({ example: 1, description: 'ID услуги' })
+  @ApiProperty({ type: () => Care })
   @ManyToOne(
     () => Care,
     care => care.careRecords,
-    { nullable: false },
+    { nullable: false, cascade: true, eager: true },
   )
   care: Care;
 

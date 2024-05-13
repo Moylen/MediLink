@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { Care } from './entities/care.entity';
+import { Care } from './care.entity';
 import { CreateCareDto } from './dto/create-care.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateCareDto } from './dto/update-care.dto';

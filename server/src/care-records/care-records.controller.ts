@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { CareRecordsService } from './care-records.service';
 import { UpdateCareRecordDto } from './dto/update-care-record.dto';
 import { CreateCareRecordDto } from './dto/create-care-record.dto';
@@ -7,7 +7,7 @@ import { RoleGuard } from '../auth/guards/role.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from '../common/enums/user-role.enum';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CareRecord } from './entities/care-record.entity';
+import { CareRecord } from './care-record.entity';
 
 @ApiTags('Care Records')
 @ApiBearerAuth()
@@ -20,21 +20,28 @@ export class CareRecordsController {
   @ApiOperation({ summary: 'Создать запись | roles: patient, doctor' })
   @ApiOkResponse({ type: CareRecord })
   @Post()
-  createServiceRecord(@Body() dto: CreateCareRecordDto) {
+  createCareRecord(@Body() dto: CreateCareRecordDto) {
     return this.careRecordsService.createCareRecord(dto);
   }
 
   @ApiOperation({ summary: 'Получить запись по ID | roles: patient, doctor' })
   @ApiOkResponse({ type: CareRecord })
-  @Get()
-  getServiceRecordById(@Param('id') id: number) {
-    return this.careRecordsService.getCareRecorddById(id);
+  @Get(':id')
+  getCareRecordById(@Param('id') id: number) {
+    return this.careRecordsService.getCareRecordById(id);
   }
 
   @ApiOperation({ summary: 'Изменить запись по ID | roles: patient, doctor' })
   @ApiOkResponse({ type: CareRecord })
-  @Patch()
-  updateServiceRecordById(@Param('id') id: number, @Body() dto: UpdateCareRecordDto) {
+  @Patch(':id')
+  updateCareRecordById(@Param('id') id: number, @Body() dto: UpdateCareRecordDto) {
     return this.careRecordsService.updateCareRecordById(id, dto);
+  }
+
+  @ApiOperation({ summary: 'Получить все записи по ID пациента | roles: patient, doctor' })
+  @ApiOkResponse({ type: [CareRecord] })
+  @Get()
+  getCareRecordsByFilter(@Query('patient_id') patientId: number) {
+    return this.careRecordsService.getCareRecordsByPatientId(patientId);
   }
 }
