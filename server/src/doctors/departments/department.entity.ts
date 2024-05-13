@@ -12,6 +12,7 @@ export class Department {
   @Column({ nullable: false, unique: true })
   name: string;
 
+  @ApiProperty({ type: () => Doctor })
   @OneToMany(() => Doctor,
     doctor => doctor.department,
     { eager: true },
