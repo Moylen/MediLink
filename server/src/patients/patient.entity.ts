@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { CareRecord } from '../care-records/care-record.entity';
+import { DoctorRecord } from '../doctor-records/doctor-record.entity';
 
 @Entity()
 export class Patient {
@@ -31,14 +32,17 @@ export class Patient {
   @Column({ nullable: false })
   phoneNumber: string;
 
-  @ApiProperty({ example: '2000-04-13', description: 'Дата рождения' })
+  @ApiProperty({ example: '2024-05-13T05:21:47.263Z', description: 'Дата рождения' })
   @Column({ type: 'date', nullable: true, default: null })
   birthday: Date;
 
-  @ApiProperty({ example: '2000-04-13', description: 'Дата создания' })
+  @ApiProperty({ example: '2024-05-13T05:21:47.263Z', description: 'Дата создания' })
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
   @OneToMany(() => CareRecord, careRecord => careRecord.patient)
-  careRecords: CareRecord[];
+  careRecords: CareRecord[]
+
+  @OneToMany(() => DoctorRecord, doctorRecords => doctorRecords.patient)
+  doctorRecords: DoctorRecord[];
 }

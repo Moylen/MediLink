@@ -19,11 +19,11 @@ export class CareResultsService {
   }
 
   async createCareResult(dto: CreateCareResultDto, file: any) {
-    const isExists = await this.careResultRepository.findOne({
+    const conflictResult = await this.careResultRepository.findOne({
       where: { careRecord: { id: Number(dto.careRecordId) } },
     });
 
-    if (isExists) {
+    if (conflictResult) {
       throw new BadRequestException('Care result for this record already exists');
     }
 

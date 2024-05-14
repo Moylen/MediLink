@@ -16,11 +16,11 @@ export class CareResult {
   @Column({ nullable: false })
   file: string;
 
-  @ApiProperty({ example: '2024-05-04 10:00:00', description: 'Дата создания' })
+  @ApiProperty({ example: '2024-05-13T05:21:47.263Z', description: 'Дата создания' })
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @ApiProperty({ example: '2024-05-04 11:00:00', description: 'Дата обновления' })
+  @ApiProperty({ example: '2024-05-13T05:21:47.263Z', description: 'Дата обновления' })
   @UpdateDateColumn()
   updatedAt: Date;
 
