@@ -25,11 +25,11 @@ export class Care {
   @Column({ default: true })
   isActive: boolean;
 
-  @ApiProperty({ example: '2024-04-29', description: 'Дата создания' })
+  @ApiProperty({ example: '2024-05-13T05:21:47.263Z', description: 'Дата создания' })
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @ApiProperty({ example: '2024-04-30', description: 'Дата изменения' })
+  @ApiProperty({ example: '2024-05-13T05:21:47.263Z', description: 'Дата изменения' })
   @UpdateDateColumn()
   updatedAt: Date;
 
