@@ -8,6 +8,7 @@ import { CareRecordsModule } from './care-records/care-records.module';
 import { FilesModule } from './files/files.module';
 import { DepartmentsModule } from './doctors/departments/departments.module';
 import { DoctorRecordsModule } from './doctor-records/doctor-records.module';
+import { AppointmentModule } from './appointment/appointment.module';
 
 
 @Module({
@@ -20,6 +21,7 @@ import { DoctorRecordsModule } from './doctor-records/doctor-records.module';
     FilesModule,
     DepartmentsModule,
     DoctorRecordsModule,
+    AppointmentModule,
   ],
 })
 export class AppModule {

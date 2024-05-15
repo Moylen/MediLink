@@ -1,8 +1,9 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Patient } from '../patients/patient.entity';
 import { Timetable } from './timetables/timetable.entity';
 import { RecordStatusEnum } from '../common/enums/record-status.enum';
 import { ApiProperty } from '@nestjs/swagger';
+import { Appointment } from '../appointment/appointment.entity';
 
 @Entity()
 export class DoctorRecord {
@@ -14,7 +15,7 @@ export class DoctorRecord {
   @ManyToOne(
     () => Patient,
     patient => patient.doctorRecords,
-    { eager: true },
+    { eager: true, nullable: false },
   )
   patient: Patient;
 
@@ -22,9 +23,15 @@ export class DoctorRecord {
   @ManyToOne(
     () => Timetable,
     timetable => timetable.doctorRecords,
-    { eager: true },
+    { eager: true, nullable: false },
   )
   timetable: Timetable;
+
+  @OneToOne(
+    () => Appointment,
+    appointment => appointment.doctorRecord
+  )
+  appointment: Appointment;
 
   @ApiProperty({ example: 'planned', description: 'Статус записи' })
   @Column({ type: 'enum', enum: RecordStatusEnum, default: RecordStatusEnum.Planned })
