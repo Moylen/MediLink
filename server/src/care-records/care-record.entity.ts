@@ -35,7 +35,10 @@ export class CareRecord {
   )
   care: Care;
 
-  @OneToOne(() => CareResult, careResult => careResult.careRecord)
+  @OneToOne(
+    () => CareResult,
+    careResult => careResult.careRecord
+  )
   careResult: CareResult;
 
 }
