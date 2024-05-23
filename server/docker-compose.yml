@@ -17,7 +17,7 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - medilink
+      - app
     networks:
       - my-network
 
