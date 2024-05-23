@@ -1,0 +1,25 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Deploy to server
+      uses: appleboy/ssh-action@master
+      with:
+        host: 45.89.65.109
+        username: root
+        password: ${{ secrets.SSH_PASSWORD }}
+        port: 22
+        script: |
+          cd MediLink/server
+          git pull
+          docker compose build
+          docker compose up -d
+
+
