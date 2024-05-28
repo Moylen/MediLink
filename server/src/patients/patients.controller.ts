@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Req, UseGuards } from '@nestjs/common';
 import { PatientsService } from './patients.service';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { UpdatePatientDto } from './dto/update-patient.dto';
@@ -23,6 +23,16 @@ export class PatientsController {
   @Get(':id')
   getById(@Param('id') id: number) {
     return this.patientService.getPatientById(id);
+  }
+
+  @ApiOperation({ summary: 'Получить текущего пациента (из токена) | roles: patient' })
+  @ApiOkResponse({ type: Patient })
+  @ApiBearerAuth()
+  @Roles(UserRoleEnum.Patient)
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get()
+  getMe(@Req() req: any) {
+    return this.patientService.getPatientById(req.user.id);
   }
 
   @ApiOperation({ summary: 'Обновить пациента по ID | roles: patient, doctor' })

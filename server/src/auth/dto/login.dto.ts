@@ -15,5 +15,6 @@ export class LoginDto {
 
   @ApiProperty({ enum: ['patient', 'doctor'], description: 'Роль' })
   @IsEnum(UserRoleEnum)
+  @IsNotEmpty()
   role: UserRoleEnum;
 }
