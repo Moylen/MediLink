@@ -2,24 +2,24 @@ services:
   app:
     build: .
     ports:
-      - "3000:3000"
+      - "80:3000"
     depends_on:
       - postgres
     command: sh -c "npm run build && npm run migration:run && npm run start:prod"
     volumes:
       - ./uploads:/app/uploads
-    networks:
-      - my-network
+#    networks:
+#      - my-network
 
-  nginx:
-    build:
-      context: ./nginx
-    ports:
-      - "80:80"
-    depends_on:
-      - app
-    networks:
-      - my-network
+#  nginx:
+#    build:
+#      context: ./nginx
+#    ports:
+#      - "80:80"
+#    depends_on:
+#      - app
+#    networks:
+#      - my-network
 
   postgres:
     image: postgres:16.2-alpine3.19
@@ -27,19 +27,18 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
-      POSTGRES_HOST_AUTH_METHOD: md5
     ports:
       - "${DB_PORT}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-    networks:
-      - my-network
+#    networks:
+#      - my-network
 
 volumes:
   pgdata:
 
-networks:
-  my-network:
+#networks:
+#  my-network:
 
 
 
