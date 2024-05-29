@@ -27,6 +27,10 @@ export class Timetable {
   )
   doctorRecords: DoctorRecord[];
 
+  @ApiProperty({ example: true, description: 'Свободно ли время' })
+  @Column({ nullable: false, default: true })
+  isFree: boolean;
+
   @ApiProperty({ example: '2024-05-13T05:21:47.263Z', description: 'Дата создания' })
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
