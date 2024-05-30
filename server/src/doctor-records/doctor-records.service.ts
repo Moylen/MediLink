@@ -47,6 +47,20 @@ export class DoctorRecordsService {
     return record;
   }
 
+  async getDoctorRecordsByPatientId(id: number) {
+    const records = await this.doctorRecordRepository.find({
+      where: {
+        patient: { id },
+      }
+    })
+
+    if (records.length === 0) {
+      throw new NotFoundException('Doctor records not found')
+    }
+
+    return records;
+  }
+
   async updateDoctorRecordById(id: number, dto: UpdateDoctorRecordDto) {
     const record = await this.doctorRecordRepository.findOneBy({ id });
     if (!record) {

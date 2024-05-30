@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, Get, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Post, Get, Patch, UseGuards, Query } from '@nestjs/common';
 import { DoctorRecordsService } from './doctor-records.service';
 import { CreateDoctorRecordDto } from './dto/create-doctor-record.dto';
 import { UpdateDoctorRecordDto } from './dto/update-doctor-record.dto';
@@ -14,7 +14,8 @@ import { DoctorRecord } from './doctor-record.entity';
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Controller('doctor-records')
 export class DoctorRecordsController {
-  constructor(private readonly doctorRecordsService: DoctorRecordsService) {}
+  constructor(private readonly doctorRecordsService: DoctorRecordsService) {
+  }
 
   @ApiOperation({ summary: 'Создать запись | roles: patient, doctor' })
   @ApiOkResponse({ type: DoctorRecord })
@@ -32,11 +33,19 @@ export class DoctorRecordsController {
     return this.doctorRecordsService.getDoctorRecordById(id);
   }
 
+  @ApiOperation({ summary: 'Получить запись по ID пациента | roles: patient, doctor' })
+  @ApiOkResponse({ type: [DoctorRecord] })
+  @Roles(UserRoleEnum.Patient, UserRoleEnum.Doctor)
+  @Get()
+  getDoctorRecordByPatientId(@Query('patient_id') id: number) {
+    return this.doctorRecordsService.getDoctorRecordsByPatientId(id);
+  }
+
   @ApiOperation({ summary: 'Обновить запись | roles: doctor' })
   @ApiOkResponse({ type: DoctorRecord })
   @Roles(UserRoleEnum.Doctor)
   @Patch(':id')
-  updateDoctorRecordById(@Param('id') id: number, dto: UpdateDoctorRecordDto) {
+  updateDoctorRecordById(@Param('id') id: number, @Body() dto: UpdateDoctorRecordDto) {
     return this.doctorRecordsService.updateDoctorRecordById(id, dto);
   }
 }
