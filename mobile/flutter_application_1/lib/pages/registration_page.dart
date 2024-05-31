@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class RegistrationPage extends StatefulWidget {
   @override
@@ -13,18 +17,56 @@ class _RegistrationPageState extends State<RegistrationPage> {
   String _email = '';
   String _password = '';
   DateTime? _birthDate;
+  String? _birthDateError;
+
+  // Создание маски для телефонного номера
+  var phoneFormatter = MaskTextInputFormatter(
+      mask: '+7 ### ### ## ##', filter: {"#": RegExp(r'[0-9]')});
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: _birthDate ?? DateTime.now(),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
     if (picked != null && picked != _birthDate) {
       setState(() {
         _birthDate = picked;
+        _birthDateError = null;
       });
+      _formKey.currentState?.save();
+    }
+  }
+
+  Future<void> registerUser() async {
+    var url = Uri.parse('http://45.89.65.109/auth/patients/registration');
+    try {
+      var response = await http.post(
+        url,
+        body: {
+          'firstName': _firstName,
+          'lastName': _lastName,
+          'phoneNumber': _phoneNumber,
+          'email': _email,
+          'password': _password,
+          'birthday': DateFormat('yyyy-MM-dd').format(_birthDate!),
+        },
+      );
+
+      if (response.statusCode == 201) {
+        Navigator.pushNamed(context, '/auth');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Ошибка при регистрации. Попробуйте еще раз.'),
+        ));
+      }
+    } catch (e) {
+      print('Ошибка при отправке запроса: $e');
+      // Например, вывод сообщения об ошибке
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Произошла ошибка. Попробуйте еще раз.'),
+      ));
     }
   }
 
@@ -32,7 +74,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Registration'),
+        title: Text('Регистрация'),
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -41,10 +84,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
           child: Column(
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: 'First Name'),
+                decoration: InputDecoration(labelText: 'Имя'),
+                textCapitalization: TextCapitalization.words,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your first name';
+                    return 'Пожалуйста, введите ваше имя';
+                  }
+                  if (!RegExp(r'^[а-яА-ЯёЁ]+$').hasMatch(value)) {
+                    return 'Имя может содержать только русские буквы';
                   }
                   return null;
                 },
@@ -53,10 +100,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Last Name'),
+                decoration: InputDecoration(labelText: 'Фамилия'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your last name';
+                    return 'Пожалуйста, введите вашу фамилию';
+                  }
+                  if (!RegExp(r'^[а-яА-ЯёЁ]+$').hasMatch(value)) {
+                    return 'Фамилия может содержать только русские буквы';
                   }
                   return null;
                 },
@@ -65,13 +115,16 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Phone Number'),
+                decoration: InputDecoration(labelText: 'Номер телефона'),
+                inputFormatters: [phoneFormatter],
+                keyboardType: TextInputType.phone,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your phone number';
+                    return 'Пожалуйста, введите ваш номер телефона';
                   }
                   return null;
                 },
+                maxLength: 16,
                 onSaved: (value) {
                   _phoneNumber = value!;
                 },
@@ -80,7 +133,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 decoration: InputDecoration(labelText: 'Email'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
+                    return 'Пожалуйста, введите ваш email';
+                  }
+                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                    return 'Пожалуйста, введите корректный email';
                   }
                   return null;
                 },
@@ -89,11 +145,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Password'),
+                decoration: InputDecoration(labelText: 'Пароль'),
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
+                    return 'Пожалуйста, введите пароль';
+                  }
+                  if (value.length < 4) {
+                    return 'Пароль должен быть не короче 4 символов';
                   }
                   return null;
                 },
@@ -106,8 +165,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 children: [
                   Text(
                     _birthDate == null
-                        ? 'Select your birth date'
-                        : 'Birth Date: ${_birthDate!.toLocal()}'.split(' ')[0],
+                        ? 'Дата рождения'
+                        : 'Дата рождения: ${DateFormat('dd.MM.yyyy').format(_birthDate!)}',
                   ),
                   IconButton(
                     icon: Icon(Icons.calendar_today),
@@ -115,15 +174,34 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   ),
                 ],
               ),
+              if (_birthDateError != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    _birthDateError!,
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {
+                  setState(() {
+                    _birthDateError = _birthDate == null
+                        ? 'Пожалуйста, выберите дату рождения'
+                        : null;
+                  });
+                  if (_formKey.currentState!.validate() && _birthDate != null) {
                     _formKey.currentState!.save();
-                    // Handle registration logic
+                    registerUser();
                   }
                 },
-                child: Text('Register'),
+                child: Text('Зарегистрироваться'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/auth');
+                },
+                child: Text('Авторизация'),
               ),
             ],
           ),
